@@ -11,9 +11,10 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'space-before-function-paren': ['error', {
-      anonymous: 'never',
+      anonymous: 'always',
       named: 'never',
-      asyncArrow: 'never'
-    }]
+      asyncArrow: 'always'
+    }],
+    camelcase: 'off'
   }
 }

@@ -38,7 +38,8 @@ export default {
         // 成功通知
         Notify({ type: 'success', message: '登录成功！' })
         setToken(res.data.token)
-        // 跳转到
+        // 跳转到首页
+        this.$router.replace({ path: '/layout/home' })
       } catch (err) {
         // 失败通知
         Notify({ type: 'warning', message: '手机号或密码错误' })
