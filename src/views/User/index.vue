@@ -45,6 +45,7 @@
 import { getUserInfoApi } from '@/api/index'
 import { Dialog } from 'vant'
 import { removeToken } from '@/utils/token'
+import { mapMutations } from 'vuex'
 export default {
   name: 'UserIndex',
   data() {
@@ -54,10 +55,12 @@ export default {
   },
   async created() {
     const { data: res } = await getUserInfoApi()
-    console.log(res)
+    // console.log(res)
     this.userObj = res.data
+    this.SET_USERPHOTO(res.data.photo)
   },
   methods: {
+    ...mapMutations(['SET_USERPHOTO']),
     // 退出登录
     quitFn() {
       Dialog.confirm({

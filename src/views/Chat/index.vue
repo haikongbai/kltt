@@ -9,22 +9,22 @@
         <!-- 左侧是机器人小思 -->
         <div class="chat-item left" v-if="obj.name !== 'me'">
           <van-image fit="cover" round src="https://img.yzcdn.cn/vant/cat.jpeg" />
-          <div class="chat-pao">这里是别人说的话</div>
+          <div class="chat-pao">{{ obj.msg }}</div>
         </div>
 
         <!-- 右侧是当前用户 -->
         <div class="chat-item right" v-else>
-          <div class="chat-pao">这里是我说的话</div>
-          <van-image fit="cover" round src="https://img.yzcdn.cn/vant/cat.jpeg" />
+          <div class="chat-pao">{{ obj.msg }}</div>
+          <van-image fit="cover" round :src="$store.state.userPhoto" />
         </div>
       </div>
     </div>
 
     <!-- 对话区域 -->
     <div class="reply-container van-hairline--top">
-      <van-field placeholder="说点什么..." v-model="word">
+      <van-field placeholder="说点什么..." v-model.trim="word">
         <template #button>
-          <span style="font-size:12px;color:#999">提交</span>
+          <span style="font-size:12px;color:#999" @click="sendFn">提交</span>
         </template>
       </van-field>
     </div>
@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import { io } from 'socket.io-client'
+import { getToken } from '@/utils/token'
 export default {
   name: 'ChatIndex',
   data() {
@@ -42,8 +44,68 @@ export default {
         // 只根据 name 属性，即可判断出这个消息应该渲染到左侧还是右侧
         { name: 'xs', msg: 'hi，你好！我是小思' },
         { name: 'me', msg: '我是编程小王子' }
-      ]
+      ],
+      socket: null // websocket 实例对象
     }
+  },
+  created() {
+    // 创建客户端 websocket 的实例,建立与服务器的socket链接
+    this.socket = io('http://geek.itheima.net', {
+      query: {
+        token: getToken()
+      },
+      transports: ['websocket']
+    })
+    // 测试是否链接成功
+    this.socket.on('connect', () => {
+      console.log('链接建立成功')
+    })
+    // 接收后台传回的消息
+    this.socket.on('message', obj => {
+      this.list.push({
+        name: 'xs',
+        msg: obj.msg
+      })
+      // 实现收到消息后自动把最后一条消息滚动上来
+      // Dom 更新是异步的，所以要加上$nextTick
+      this.$nextTick(() => {
+        const theDiv = document.querySelector('.chat-list>div:last-child')
+        // console.log(theDiv)
+        theDiv.scrollIntoView({
+          behavior: 'smooth'
+        })
+      })
+    })
+  },
+  methods: {
+    // 点击发送信息
+    sendFn() {
+      if (this.word.length === 0) return
+      // 发送信息给后台
+      this.socket.emit('message', {
+        msg: this.word,
+        timestamp: new Date().getTime()
+      })
+      // 在前台渲染发送的信息
+      this.list.push({
+        name: 'me',
+        msg: this.word
+      })
+      this.$nextTick(() => {
+        const theDiv = document.querySelector('.chat-list>div:last-child')
+        theDiv.scrollIntoView({
+          behavior: 'smooth'
+        })
+      })
+      // 清空输入框
+      this.word = ''
+    }
+  },
+  destroyed() {
+    // 在销毁组件时，关闭链接
+    this.socket.close()
+    // 清空websocket实例对象
+    this.socket = null
   }
 }
 </script>
