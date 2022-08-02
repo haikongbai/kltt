@@ -32,6 +32,7 @@
 
 <script>
 import { suggestListApi } from '@/api/index'
+import { setStorage, getStorage } from '@/utils/storage'
 export default {
   name: 'SearchIndex',
   data() {
@@ -39,7 +40,7 @@ export default {
       kw: '', // 搜索关键字
       timer: null, // 防抖延时器变量
       suggestList: [], // 联想建议列表文字数组
-      history: JSON.parse(localStorage.getItem('his')) || [] // 搜索历史
+      history: JSON.parse(getStorage('his')) || [] // 搜索历史
     }
   },
   methods: {
@@ -118,7 +119,7 @@ export default {
         // 把它转换回Array
         const Arr = Array.from(theSet)
         // 本地不能存储数组，所以把它转为JSON字符串
-        localStorage.setItem('his', JSON.stringify(Arr))
+        setStorage('his', JSON.stringify(Arr))
       }
     }
   }

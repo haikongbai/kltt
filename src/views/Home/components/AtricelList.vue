@@ -14,7 +14,7 @@
 <script>
 import ArticleItem from '../../../components/ArticleItem.vue'
 import { getArticleList, dislikeArticleApi, reportArticleApi } from '@/api/index'
-import { Notify } from 'vant'
+import Notify from '@/ui/Notify'
 export default {
   name: 'ArticleList',
   props: {

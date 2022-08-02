@@ -8,17 +8,17 @@
           <!-- 标题 -->
           <span>{{ obj.title }}</span>
           <!-- 单图 -->
-          <!-- <img v-if="obj.cover.type === 1" :src="obj.cover.images[0]" alt="" class="thumb"> -->
-          <van-image v-if="obj.cover.type === 1" :src="obj.cover.images[0]" class="thumb">
+          <img v-if="obj.cover.type === 1" alt="" class="thumb" v-lazy="obj.cover.images[0]">
+          <!-- <van-image v-if="obj.cover.type === 1" :src="obj.cover.images[0]" class="thumb">
             <template v-slot:error>图片走丢了。。</template>
-          </van-image>
+          </van-image> -->
         </div>
         <!-- 多图 -->
         <div class="thumb-box" v-if="obj.cover.type > 1">
-          <!-- <img v-for="(imagesUrl,index) in obj.cover.images " :key="index" :src="imagesUrl" alt="" class="thumb"> -->
-          <van-image v-for="(imagesUrl,index) in obj.cover.images " :key="index" :src="imagesUrl" class="thumb">
+          <img v-for="(imagesUrl,index) in obj.cover.images " :key="index" alt="" class="thumb" v-lazy="imagesUrl">
+          <!-- <van-image v-for="(imagesUrl,index) in obj.cover.images " :key="index" :src="imagesUrl" class="thumb">
             <template v-slot:error>图片走丢了。。</template>
-          </van-image>
+          </van-image> -->
         </div>
       </template>
       <!-- label 区域的插槽 -->

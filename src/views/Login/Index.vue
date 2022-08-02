@@ -13,8 +13,10 @@
 
 <script>
 import { loginApi } from '@/api'
-import { Notify } from 'vant'
+import Notify from '@/ui/Notify'
 import { setToken } from '@/utils/token.js'
+import { setStorage } from '@/utils/storage'
+
 export default {
   name: 'LoginIndex',
   data() {
@@ -38,8 +40,11 @@ export default {
         // 成功通知
         Notify({ type: 'success', message: '登录成功！' })
         setToken(res.data.token)
+        setStorage('refresh_token', res.data.refresh_token)
         // 跳转到首页
-        this.$router.replace({ path: '/layout/home' })
+        this.$router.replace({
+          path: this.$route.query.path || '/layout/home'
+        })
       } catch (err) {
         // 失败通知
         Notify({ type: 'warning', message: '手机号或密码错误' })

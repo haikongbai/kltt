@@ -1,15 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import { getToken } from '@/utils/token'
 
-import Login from '@/views/Login/Index'
-import Layout from '@/views/Layout/index'
-import Home from '@/views/Home/index'
-import User from '@/views/User/index'
-import Search from '@/views/Search/index'
-import SearchResult from '@/views/Search/SearchResult'
-import ArticleDetail from '@/views/ArticleDetail/index'
-import UserEdit from '@/views/User/UserEdit'
-import Chat from '@/views/Chat/index'
+const Login = () => import(/* webpackChunkName: "Login" */ '@/views/Login/Index')
+const Layout = () => import(/* webpackChunkName: "Layout" */ '@/views/Layout/index')
+const Home = () => import(/* webpackChunkName: "Home" */ '@/views/Home/index')
+const User = () => import(/* webpackChunkName: "User" */ '@/views/User/index')
+const Search = () => import(/* webpackChunkName: "Search" */ '@/views/Search/index')
+const SearchResult = () => import(/* webpackChunkName: "SearchResult" */ '@/views/Search/SearchResult')
+const ArticleDetail = () => import(/* webpackChunkName: "ArticleDetail" */ '@/views/ArticleDetail/index')
+const UserEdit = () => import(/* webpackChunkName: "UserEdit" */ '@/views/User/UserEdit')
+const Chat = () => import(/* webpackChunkName: "Chat" */ '@/views/Chat/index')
 
 Vue.use(VueRouter)
 
@@ -28,7 +29,10 @@ const routes = [
     children: [
       {
         path: 'home',
-        component: Home
+        component: Home,
+        meta: {
+          sctollT: 0
+        }
       },
       {
         path: 'user',
@@ -60,6 +64,17 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+// 路由 全局前置守卫
+router.beforeEach((to, from, next) => {
+  if (getToken()?.length > 0 && to.path === '/login') {
+    // next(false)
+    // 不让它留在原地，而是让他跳转到首页，解决返回按钮的问题
+    next('/layout/home')
+  } else {
+    next()
+  }
 })
 
 export default router

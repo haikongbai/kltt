@@ -13,7 +13,7 @@
     </div>
     <!-- tab标签栏 -->
     <div class="main">
-      <van-tabs v-model="channelId" animated sticky offset-top="1.226667rem">
+      <van-tabs v-model="channelId" animated sticky offset-top="1.226667rem" @change="channelChangeFn">
         <van-tab v-for="item in userChannelsList" :key="item.id" :title=" item.name" :name="item.id">
           <article-list :channelId='channelId'></article-list>
         </van-tab>
@@ -42,7 +42,8 @@ export default {
       channelId: 0, // 频道id，默认为0（一打开页面，推荐频道高亮，获取推荐频道文章列表数据）
       userChannelsList: [], // 用户选择频道列表
       allChannleList: [], // 所有频道列表
-      show: false // 频道弹出层显示/隐藏
+      show: false, // 频道弹出层显示/隐藏
+      channelScrollTobj: {} // 保存每个频道滚动位置
     }
   },
   async created() {
@@ -99,6 +100,21 @@ export default {
     // 点击首页右上角的搜索图标跳转到搜索页面
     toSearch() {
       this.$router.push('/search')
+    },
+    // 监听滚动事件的回调函数
+    scrollFn() {
+      // 保存滚动条的位置到路由规则
+      this.$route.meta.scrollT = document.documentElement.scrollTop
+      // 保存每个频道的滚动条位置
+      this.channelScrollTobj[this.channelId] = document.documentElement.scrollTop
+    },
+    // 频道切换时
+    channelChangeFn() {
+      // 由于频道被切走后，该频道的列表高度会被设置成 0 ，所以切回来时要等 DOM 更新后再给
+      // document.documentElement.scrollTop 值
+      this.$nextTick(() => {
+        document.documentElement.scrollTop = this.channelScrollTobj[this.channelId]
+      })
     }
   },
   computed: {
@@ -116,6 +132,17 @@ export default {
       })
       return newArr
     }
+  },
+  // 因为添加了 keep-alive 缓存组件，所以有 activated,deactivated两个钩子函数
+  activated() {
+    // 监听滚动事件，得到滚动条的位置
+    window.addEventListener('scroll', this.scrollFn)
+    // 取出保存的滚动条的位置，赋给页面
+    document.documentElement.scrollTop = this.$route.meta.scrollT
+  },
+  deactivated() {
+    // 移除监听滚动
+    window.removeEventListener('scroll', this.scrollFn)
   }
 }
 </script>

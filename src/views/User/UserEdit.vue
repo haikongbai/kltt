@@ -33,8 +33,9 @@
 
 <script>
 import { getUserProfileApi, updateUserPhotoApi, updateUserProfileApi } from '@/api/index'
-import { Notify } from 'vant'
+import Notify from '@/ui/Notify'
 import { formatTime } from '@/utils/date'
+import { mapMutations } from 'vuex'
 export default {
   name: 'UserEdit',
   data() {
@@ -52,8 +53,10 @@ export default {
     const { data: res } = await getUserProfileApi()
     // console.log(res)
     this.profileObj = res.data
+    this.SET_USERNAME(res.data.name)
   },
   methods: {
+    ...mapMutations(['SET_USERPHOTO', 'SET_USERNAME']),
     // 文件选择改变事件
     async onFileChange(e) {
       if (e.target.files.length === 0) return // 如果用户点击了头像，但没选图片，点击了取消，就要阻止发送
@@ -63,6 +66,7 @@ export default {
       const { data: res } = await updateUserPhotoApi(theFd)
       // console.log(res)
       this.profileObj.photo = res.data.photo
+      this.SET_USERPHOTO(res.data.photo)
     },
     // 点击头像
     imageClickFn() {
@@ -86,6 +90,7 @@ export default {
           })
           // console.log(res)
           this.profileObj.name = this.nameText
+          this.SET_USERNAME(this.nameText)
           done()
         } else {
           // 没通过校验，通知用户
