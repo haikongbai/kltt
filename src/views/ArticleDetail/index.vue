@@ -44,7 +44,7 @@
 
       <!-- 文章评论列表 -->
       <div>
-        <CommentList></CommentList>
+        <CommentList :isCollected="isCollected" @changeCollectedEV="changeCollectedFn"></CommentList>
       </div>
     </div>
   </div>
@@ -61,7 +61,8 @@ export default {
   },
   data() {
     return {
-      artObj: {} // 文章详情对象
+      artObj: {}, // 文章详情对象
+      isCollected: false // 是否收藏了该文章
     }
   },
   async created() {
@@ -70,6 +71,7 @@ export default {
     })
     // console.log(res)
     this.artObj = res.data
+    this.isCollected = res.data.is_collected
   },
   methods: {
     // 处理时间
@@ -109,6 +111,11 @@ export default {
           art_id: this.artObj.art_id
         })
       }
+    },
+    // 收藏/取消收藏
+    changeCollectedFn(value) {
+      // console.log(value)
+      this.isCollected = value
     }
   }
 }

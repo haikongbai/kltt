@@ -5,7 +5,7 @@ import router from '@/router/index'
 import { getToken, removeToken } from './token' // , setToken
 // import { getNewTokenApi } from '@/api/index'
 const axios = Axios.create({
-  baseURL: 'http://geek.itheima.net', // 接口基地址
+  baseURL: 'https://toutiao.itheima.net/', // 'http://geek.itheima.net', // 接口基地址
   timeout: 30000 // 请求30秒无响应直接判定超时
 })
 

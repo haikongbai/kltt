@@ -36,6 +36,21 @@ export const unLikeArticleApi = ({ art_id }) => request({
   method: 'DELETE'
 })
 
+// 文章 - 收藏文章
+export const collectArticleApi = ({ art_id }) => request({
+  url: '/v1_0/article/collections',
+  method: 'POST',
+  data: {
+    target: art_id
+  }
+})
+
+// 文章 - 取消收藏文章
+export const unCollectArticleApi = ({ art_id }) => request({
+  url: `/v1_0/article/collections/${art_id}`,
+  method: 'DELETE'
+})
+
 // 评论 - 获取文章评论列表
 export const commentsList = ({ id, offset = null, limit = 10 }) => request({
   url: '/v1_0/comments',

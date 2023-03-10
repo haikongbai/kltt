@@ -104,9 +104,9 @@ export default {
     // 监听滚动事件的回调函数
     scrollFn() {
       // 保存滚动条的位置到路由规则
-      this.$route.meta.scrollT = document.documentElement.scrollTop
+      this.$route.meta.scrollT = document.documentElement.scrollTop || document.body.scrollTop
       // 保存每个频道的滚动条位置
-      this.channelScrollTobj[this.channelId] = document.documentElement.scrollTop
+      this.channelScrollTobj[this.channelId] = document.documentElement.scrollTop || document.body.scrollTop
     },
     // 频道切换时
     channelChangeFn() {
@@ -114,6 +114,7 @@ export default {
       // document.documentElement.scrollTop 值
       this.$nextTick(() => {
         document.documentElement.scrollTop = this.channelScrollTobj[this.channelId]
+        document.body.scrollTop = this.channelScrollTobj[this.channelId]
       })
     }
   },
@@ -139,6 +140,7 @@ export default {
     window.addEventListener('scroll', this.scrollFn)
     // 取出保存的滚动条的位置，赋给页面
     document.documentElement.scrollTop = this.$route.meta.scrollT
+    document.body.scrollTop = this.$route.meta.scrollT
   },
   deactivated() {
     // 移除监听滚动

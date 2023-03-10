@@ -37,7 +37,10 @@
           <van-badge :content="totalCount=== 0 ? '':totalCount" max="99">
             <van-icon name="comment-o" size="0.53333334rem" @click="moveFn" />
           </van-badge>
-          <van-icon name="star-o" size="0.53333334rem" />
+
+          <van-icon name="star" size="0.53333334rem" color="rgb(238, 10, 36)" v-if="isCollected" @click="starFn(false)" />
+          <van-icon name="star-o" size="0.53333334rem" color="rgb(238, 10, 36)" v-else @click="starFn(true)" />
+
           <van-icon name="share-o" size="0.53333334rem" />
         </div>
       </div>
@@ -52,10 +55,16 @@
 </template>
 
 <script>
-import { commentsList, commentLikingApi, commentUnlikingApi, commentSendApi } from '@/api/index'
+import { commentsList, commentLikingApi, commentUnlikingApi, commentSendApi, collectArticleApi, unCollectArticleApi } from '@/api/index'
 import { timeAgo } from '@/utils/date'
+import Notify from '@/ui/Notify'
 export default {
   name: 'CommentList',
+  props: {
+    isCollected: {
+      type: Boolean
+    }
+  },
   data() {
     return {
       offset: null, // 偏移量id（评论id）告诉后台从此id往后返回数据给前端, 做加载更多效果
@@ -158,6 +167,26 @@ export default {
         this.loading = false
       } else {
         this.loading = false
+      }
+    },
+    // 收藏/取消收藏
+    async starFn(bool) {
+      if (bool === true) {
+        // 点击的是空心，要收藏
+        this.$emit('changeCollectedEV', true)
+        // 调用收藏接口
+        await collectArticleApi({
+          art_id: this.$route.query.art_id
+        })
+        Notify({ type: 'success', message: '收藏成功' })
+      } else {
+        // 点击的是实心，要取消收藏
+        this.$emit('changeCollectedEV', false)
+        // 调用取消收藏接口
+        await unCollectArticleApi({
+          art_id: this.$route.query.art_id
+        })
+        Notify({ type: 'success', message: '取消收藏成功' })
       }
     }
   }

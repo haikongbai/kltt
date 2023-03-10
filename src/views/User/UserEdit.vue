@@ -53,7 +53,7 @@ export default {
     const { data: res } = await getUserProfileApi()
     // console.log(res)
     this.profileObj = res.data
-    this.SET_USERNAME(res.data.name)
+    this.$store.commit.SET_USERNAME(res.data.name)
   },
   methods: {
     ...mapMutations(['SET_USERPHOTO', 'SET_USERNAME']),

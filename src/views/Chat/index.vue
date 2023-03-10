@@ -50,7 +50,7 @@ export default {
   },
   created() {
     // 创建客户端 websocket 的实例,建立与服务器的socket链接
-    this.socket = io('http://geek.itheima.net', {
+    this.socket = io('http://toutiao.itheima.net', {
       query: {
         token: getToken()
       },
